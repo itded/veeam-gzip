@@ -34,7 +34,7 @@ namespace GZipArchiver.Lib.Tests
         /// Please copy any file to CompressionLarge folder.
         /// </summary>
         [TestMethod]
-        public void CompressAndDecompressSmallFiles()
+        public void CompressAndDecompressLargeFiles()
         {
             var fileNames = Directory.EnumerateFiles(InputCompressionDir);
             foreach (var fileName in fileNames)

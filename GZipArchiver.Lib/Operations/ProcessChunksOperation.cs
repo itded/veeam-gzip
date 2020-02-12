@@ -44,8 +44,9 @@ namespace GZipArchiver.Lib.Operations
             FileChunkItem inputItem = null;
             FileChunkItem outputItem = null;
             bool dequeueNextItem = true;
-            bool processNextItem = true;
-            bool addNextItem = true;
+            bool processNextItem = false;
+            bool addNextItem = false;
+            bool decreaseCount = false;
 
             while (_context.ProcessCount > 0 && !IsOperationCancelled)
             {
@@ -54,12 +55,12 @@ namespace GZipArchiver.Lib.Operations
                 {
                     processNextItem = _inputFileChunks.TryDequeue(out inputItem, Timeouts.CollectionTimeout);
                     addNextItem = false;
+                    decreaseCount = false;
                 }
 
                 if (processNextItem)
                 {
                     outputItem = ProcessFileChunkItem(inputItem);
-                    _context.DecreaseProcessCount();
                     addNextItem = true;
                 }
 
@@ -69,6 +70,12 @@ namespace GZipArchiver.Lib.Operations
                         _outputFileChunks.TryAddToArray(outputItem, outputItem.Index, Timeouts.CollectionTimeout);
                     dequeueNextItem = addResult;
                     processNextItem = addResult;
+                    decreaseCount = addResult;
+                }
+
+                if (decreaseCount)
+                {
+                    _context.DecreaseProcessCount();
                 }
             }
         }

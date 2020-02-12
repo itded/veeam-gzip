@@ -47,10 +47,14 @@ namespace GZipArchiver.Lib.Operations
                 {
                     lastChunk = ReadFileChunk();
                     lastChunk.Index = currentStep;
-                    currentStep++;
                 }
 
                 readNextChunk = _inputFileChunks.TryEnqueue(lastChunk, Timeouts.CollectionTimeout);
+
+                if (readNextChunk)
+                {
+                    currentStep++;
+                }
             }
         }
 
